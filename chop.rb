@@ -1,6 +1,17 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
 
+def usage(message)
+  puts "ERROR: #{message}"
+  puts
+  puts 'chop --header <HEADER> --wanted <WANTED> <FILE1> <FILE2> ... <FILEN>'
+  puts 'Searches each file and chops it into blocks separated by any line'
+  puts 'containing <HEADER>. It will then display it, with a new line, if the'
+  puts 'block also contains <WANTED>'
+
+  exit(1)
+end
+
 def find_opts(list, required = [])
   rest = []
   args = {}
@@ -9,7 +20,7 @@ def find_opts(list, required = [])
     x = list.shift
     if x.index('--') == 0
       key = x[2..-1].downcase
-      raise "Argument #{x} already supplied" if args.key?(key)
+      usage("Argument #{x} already supplied") if args.key?(key)
 
       if key.include?('=')
         key, value = key.split('=', 2)
@@ -17,7 +28,7 @@ def find_opts(list, required = [])
         value = list.shift
       end
 
-      raise "No value given for #{x}" if value.nil?
+      usage("No value given for #{x}") if value.nil?
       args[key] = value
     else
       rest << x
@@ -25,7 +36,7 @@ def find_opts(list, required = [])
   end
 
   required.each do |r|
-    raise "Required argument --#{r} is missing" unless args.key?(r)
+    usage("Required argument --#{r} is missing") unless args.key?(r)
   end
 
   return args, rest

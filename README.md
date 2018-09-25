@@ -1,6 +1,6 @@
 # chop
 
-Extracting the useful things I need from log files
+Searches a list of files and chops them into blocks separated by any line containing **HEADER**. It will then display it, with a new line, if the block also contains **WANTED**
 
 Given an example file, `receipts.txt` such as this (but much longer)
 
@@ -15,8 +15,7 @@ Given an example file, `receipts.txt` such as this (but much longer)
 	Bun 0.75
 	...
 
-How would you extract the receipts that include Coffee? Assuming you are not
-a `sed` or `awk` master
+How would you extract the receipts that include Coffee? Assuming you are not a `sed` or `awk` master
 
 	  chomp --header Receipt --wanted Coffee receipts.txt
 
