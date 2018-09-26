@@ -5,7 +5,6 @@ import tables
 var args = initTable[string, string]()
 var files: seq[string] = @[]
 var text: seq[string] = @[]
-var found_wanted = false
 
 proc get_args() =
   var i = 1
@@ -25,7 +24,14 @@ proc get_args() =
     i += 1
 
 proc process(text: seq[string]) =
-  if found_wanted:
+  var found = false
+
+  for line in text:
+    if contains(line, args["wanted"]):
+      found = true
+      break
+
+  if found:
     for line in text:
       echo line
     echo ""
@@ -34,9 +40,6 @@ proc add_line(line: string) =
   if contains(line, args["header"]):
     process(text)
     text = @[]
-    found_wanted = false
-  elif contains(line, args["wanted"]):
-    found_wanted = true
   text.add(line)
 
 get_args()
