@@ -2,12 +2,21 @@
 # encoding: UTF-8
 
 def usage(message)
-  puts "ERROR: #{message}"
-  puts
-  puts 'chop --header <HEADER> --wanted <WANTED> <FILE1> <FILE2> ... <FILEN>'
-  puts 'Searches each file and chops it into blocks separated by any line'
-  puts 'containing <HEADER>. It will then display it, with a new line, if the'
-  puts 'block also contains <WANTED>'
+  name = File.basename($PROGRAM_NAME)
+
+  if message
+    puts "#{name}: #{message}"
+    puts
+  end
+
+  puts <<-eos
+#{name} --header <HEADER> --wanted <WANTED> <FILE1> <FILE2> ... <FILEN>
+    Processes all the files <FILE1> to <FILEN> and breaks them into blocks on
+    any line containing the <HEADER> text. If the block also contains the
+    <WANTED> text the block will be displayed to stdout
+
+    Both --header and --wanted are required arguments
+eos
 
   exit(1)
 end
