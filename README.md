@@ -31,6 +31,16 @@ Which will return
 
 A bit dull really but damn useful when wading through multi gigabyte log files :)
 
+Additionally you can have **UNWANTED** which will suppress the display of the text if it contains the **UNWANTED** text. **WANTED** and **UNWANTED** can be used in combination but at least one of them must be supplied
+
+	  chop --header Receipt --wanted Coffee --unwanted Bagel receipts.txt
+
+Which will return
+
+	Receipt 2018-05-15
+	Coffee 2.50
+	Bun 0.75
+
 # Which one then?
 
 When I wanted this simple tool I wrote it in Ruby, my go to language. When the language junkie in me wanted to learn a new language, `nim` in this case, I decided to rewrite my simpler tools as a learning exercise

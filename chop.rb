@@ -10,12 +10,15 @@ def usage(message)
   end
 
   puts <<-eos
-#{name} --header <HEADER> --wanted <WANTED> <FILE1> <FILE2> ... <FILEN>
+#{name} --header <HEADER> --wanted <WANTED> --unwanted <UNWANTED> <FILE1> <FILE2> ... <FILEN>
     Processes all the files <FILE1> to <FILEN> and breaks them into blocks on
-    any line containing the <HEADER> text. If the block also contains the
-    <WANTED> text the block will be displayed to stdout
+    any line containing the <HEADER> text
 
-    Both --header and --wanted are required arguments
+    If <UNWANTED> is given and the block contains it the block will not be displayed
+
+    If <WANTED> is given and the block also contains it the block will be displayed
+
+    Both --header is required plus one / both of --wanted and --unwanted
 eos
 
   exit(1)
@@ -51,10 +54,20 @@ def find_opts(list, required = [])
   return args, rest
 end
 
-args, rest = find_opts(ARGV, %w(wanted header))
+args, rest = find_opts(ARGV, %w(header))
 
-def process(text, wanted)
-  return unless text.include?(wanted)
+one_of = false
+%w(wanted unwanted).each do |arg|
+  one_of = true if args.key?(arg)
+end
+
+usage("One of --wanted or --unwanted (or both) are required") unless one_of
+
+def process(text, wanted, unwanted)
+  return if wanted && !text.include?(wanted)
+  return if unwanted && text.include?(unwanted)
+  return if text == ''
+
   puts text
   puts
 end
@@ -64,10 +77,10 @@ text = ''
 rest.each do |filename|
   File.open(filename, 'r').each do |line|
     if line.include?(args['header'])
-      process(text, args['wanted'])
+      process(text, args['wanted'], args['unwanted'])
       text = ''
     end
     text << line
   end
-  process(text, args['wanted'])
+  process(text, args['wanted'], args['unwanted'])
 end
