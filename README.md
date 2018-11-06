@@ -54,3 +54,7 @@ $ nim compile -d:release chop.nim
 ```
 
 Needs polishing but it works well enough
+
+# To do
+
+0. Add a usage display to the nim version
