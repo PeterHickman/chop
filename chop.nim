@@ -24,12 +24,23 @@ proc get_args() =
     i += 1
 
 proc process(text: seq[string]) =
-  var found = false
+  var found = true
 
-  for line in text:
-    if contains(line, args["wanted"]):
-      found = true
-      break
+  if text.len() == 0:
+    return
+
+  if hasKey(args, "wanted"):
+    found = false
+    for line in text:
+      if contains(line, args["wanted"]):
+        found = true
+        break
+
+  if hasKey(args, "unwanted"):
+    for line in text:
+      if line.contains(args["unwanted"]):
+        found = false
+        break
 
   if found:
     for line in text:
@@ -44,16 +55,22 @@ proc add_line(line: string) =
 
 get_args()
 
-if args.len() != 2:
-  echo "There are 2 required argument --header and --wanted"
+if args.len() != 2 and args.len() != 3:
+  echo "--header is required with at least one of --wanted and / or --unwanted"
   quit(QuitFailure)
 
 if not hasKey(args, "header"):
   echo "Missing argument --header"
   quit(QuitFailure)
 
-if not hasKey(args, "wanted"):
-  echo "Missing argument --wanted"
+var one_of = false
+if hasKey(args, "wanted"):
+  one_of = true
+elif hasKey(args, "unwanted"):
+  one_of = true
+
+if not one_of:
+  echo "Missing argument --wanted or --unwanted"
   quit(QuitFailure)
 
 if files.len() == 0:
@@ -65,4 +82,3 @@ else:
     for line in lines file:
       add_line(line)
     process(text)
-
