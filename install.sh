@@ -26,11 +26,11 @@ if [ "$CHOICE" = "nim" ]; then
 
   echo "Installing the nim version to $TARGET"
   nim compile -d:release chop.nim
-  install -g $ROOT -o $ROOT -m 0644 chop $TARGET
+  install -g $ROOT -o $ROOT -m 0755 chop $TARGET
   rm chop
 elif [ "$CHOICE" = "ruby" ]; then
   echo "Installing the ruby version to $TARGET"
-  install -g $ROOT -o $ROOT -m 0644 chop.rb $TARGET
+  install -g $ROOT -o $ROOT -m 0755 chop.rb $TARGET
 else
   echo "Pass 'nim' or 'ruby' to install the appropriate version"
   exit 1
