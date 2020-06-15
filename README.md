@@ -31,7 +31,7 @@ Which will return
 
 A bit dull really but damn useful when wading through multi gigabyte log files :)
 
-Additionally you can have **UNWANTED** which will suppress the display of the text if it contains the **UNWANTED** text. **WANTED** and **UNWANTED** can be used in combination but at least one of them must be supplied
+Additionally you can have **UNWANTED** which will suppress the display of the text if it contains the **UNWANTED** text. **WANTED** and **UNWANTED** can be used in combination
 
 	  chop --header Receipt --wanted Coffee --unwanted Bagel receipts.txt
 
@@ -41,20 +41,4 @@ Which will return
 	Coffee 2.50
 	Bun 0.75
 
-# Which one then?
-
-When I wanted this simple tool I wrote it in Ruby, my go to language. When the language junkie in me wanted to learn a new language, `nim` in this case, I decided to rewrite my simpler tools as a learning exercise
-
-On the plus side the `nim` version runs much faster :)
-
-You'll have to compile it if you want to use it
-
-```bash
-$ nim compile -d:release chop.nim
-```
-
-Needs polishing but it works well enough
-
-# To do
-
-0. Add a usage display to the nim version
+**Note**: When neither **WANTED** or **UNWANTED** is given then **HEADER** will be used as **WANTED**

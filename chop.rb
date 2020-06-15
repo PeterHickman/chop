@@ -18,7 +18,7 @@ def usage(message)
 
     If <WANTED> is given and the block also contains it the block will be displayed
 
-    Both --header is required plus one / both of --wanted and --unwanted
+    If <WANTED> or <UNWANTED> is not given then we use <HEADER> in place of <WANTED>
 eos
 
   exit(1)
@@ -61,7 +61,11 @@ one_of = false
   one_of = true if args.key?(arg)
 end
 
-usage("One of --wanted or --unwanted (or both) are required") unless one_of
+##
+# If wanted or unwanted is not given then we use
+# the header in place of wanted
+##
+args['wanted'] = args['header'] unless one_of
 
 def process(text, wanted, unwanted)
   return if wanted && !text.include?(wanted)
