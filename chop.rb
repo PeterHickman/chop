@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
+# frozen_string_literal: true
 
 def usage(message)
   name = File.basename($PROGRAM_NAME)
@@ -9,17 +10,17 @@ def usage(message)
     puts
   end
 
-  puts <<-eos
-#{name} --header <HEADER> --wanted <WANTED> --unwanted <UNWANTED> <FILE1> <FILE2> ... <FILEN>
-    Processes all the files <FILE1> to <FILEN> and breaks them into blocks on
-    any line containing the <HEADER> text
+  puts <<~EOS
+  #{name} --header <HEADER> --wanted <WANTED> --unwanted <UNWANTED> <FILE1> <FILE2> ... <FILEN>
+  Processes all the files <FILE1> to <FILEN> and breaks them into blocks on
+  any line containing the <HEADER> text
 
-    If <UNWANTED> is given and the block contains it the block will not be displayed
+  If <UNWANTED> is given and the block contains it the block will not be displayed
 
-    If <WANTED> is given and the block also contains it the block will be displayed
+  If <WANTED> is given and the block also contains it the block will be displayed
 
-    If <WANTED> or <UNWANTED> is not given then we use <HEADER> in place of <WANTED>
-eos
+  If <WANTED> or <UNWANTED> is not given then we use <HEADER> in place of <WANTED>
+  EOS
 
   exit(1)
 end
@@ -51,13 +52,13 @@ def find_opts(list, required = [])
     usage("Required argument --#{r} is missing") unless args.key?(r)
   end
 
-  return args, rest
+  [args, rest]
 end
 
-args, rest = find_opts(ARGV, %w(header))
+args, rest = find_opts(ARGV, %w[header])
 
 one_of = false
-%w(wanted unwanted).each do |arg|
+%w[wanted unwanted].each do |arg|
   one_of = true if args.key?(arg)
 end
 
@@ -76,13 +77,13 @@ def process(text, wanted, unwanted)
   puts
 end
 
-text = ''
+text = String.new
 
 rest.each do |filename|
   File.open(filename, 'r').each do |line|
     if line.include?(args['header'])
       process(text, args['wanted'], args['unwanted'])
-      text = ''
+      text = String.new
     end
     text << line
   end
