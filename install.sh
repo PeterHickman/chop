@@ -14,5 +14,11 @@ ROOT="0"
 
 TARGET="/usr/local/bin/chop"
 
-echo "Installing the ruby version to $TARGET"
-install -g $ROOT -o $ROOT -m 0755 chop.rb $TARGET
+echo "Building chop"
+go build chop.go
+
+echo "Installing chop to $TARGET"
+install -g $ROOT -o $ROOT -m 0755 chop $TARGET
+
+echo "Removing the build artefact"
+rm chop
