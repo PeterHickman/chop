@@ -9,16 +9,16 @@ import (
 )
 
 var options = make(map[string]string)
-var has_wanted bool
-var has_unwanted bool
+var hasWanted bool
+var hasUnwanted bool
 var files = []string{}
 
 func fileExists(filename string) bool {
 	if _, err := os.Stat(filename); errors.Is(err, os.ErrNotExist) {
 		return false
-	} else {
-		return true
 	}
+
+	return true
 }
 
 func hasKey(h map[string]string, k string) bool {
@@ -35,10 +35,10 @@ func reportMatch(lines []string) {
 	text := strings.Join(lines, "\n")
 
 	x := false
-	if has_wanted && strings.Contains(text, options["wanted"]) {
+	if hasWanted && strings.Contains(text, options["wanted"]) {
 		x = true
 	}
-	if has_unwanted && strings.Contains(text, options["unwanted"]) {
+	if hasUnwanted && strings.Contains(text, options["unwanted"]) {
 		x = false
 	}
 
@@ -54,7 +54,7 @@ func process(filename string) {
 	readFile, err := os.Open(filename)
 
 	if err != nil {
-		dropdead(fmt.Sprintf("Unable to read %s", filename))
+		dropdead("Unable to read " + filename)
 	}
 
 	fileScanner := bufio.NewScanner(readFile)
@@ -97,8 +97,8 @@ func opts() {
 		}
 	}
 
-	has_wanted = hasKey(options, "wanted")
-	has_unwanted = hasKey(options, "unwanted")
+	hasWanted = hasKey(options, "wanted")
+	hasUnwanted = hasKey(options, "unwanted")
 
 	if hasKey(options, "header") {
 		if hasKey(options, "wanted") || hasKey(options, "unwanted") {
