@@ -101,7 +101,7 @@ func opts() {
 	hasUnwanted = hasKey(options, "unwanted")
 
 	if hasKey(options, "header") {
-		if hasKey(options, "wanted") || hasKey(options, "unwanted") {
+		if hasWanted || hasUnwanted {
 			// This is good
 		} else {
 			options["wanted"] = options["header"]
