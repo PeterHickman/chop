@@ -2,8 +2,8 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
+	toolbox "github.com/PeterHickman/toolbox"
 	"os"
 	"strings"
 )
@@ -12,14 +12,6 @@ var options = make(map[string]string)
 var hasWanted bool
 var hasUnwanted bool
 var files = []string{}
-
-func fileExists(filename string) bool {
-	if _, err := os.Stat(filename); errors.Is(err, os.ErrNotExist) {
-		return false
-	}
-
-	return true
-}
 
 func hasKey(h map[string]string, k string) bool {
 	_, err := h[k]
@@ -89,7 +81,7 @@ func opts() {
 				options[k[2:]] = os.Args[(1 + i)]
 			}
 		} else {
-			if fileExists(k) {
+			if toolbox.FileExists(k) {
 				files = append(files, k)
 			} else {
 				dropdead(fmt.Sprintf("[%s] is not a real file\n", k))
