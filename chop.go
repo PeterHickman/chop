@@ -1,24 +1,17 @@
 package main
 
-// TODO: need to use the flag package
-
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	toolbox "github.com/PeterHickman/toolbox"
 	"os"
 	"strings"
 )
 
-var options = make(map[string]string)
-var hasWanted bool
-var hasUnwanted bool
-var files = []string{}
-
-func hasKey(h map[string]string, k string) bool {
-	_, err := h[k]
-	return err
-}
+var header string
+var wanted string
+var unwanted string
 
 func dropdead(message string) {
 	fmt.Println(message)
@@ -29,10 +22,10 @@ func reportMatch(lines []string) {
 	text := strings.Join(lines, "\n")
 
 	x := false
-	if hasWanted && strings.Contains(text, options["wanted"]) {
+	if wanted != "" && strings.Contains(text, wanted) {
 		x = true
 	}
-	if hasUnwanted && strings.Contains(text, options["unwanted"]) {
+	if unwanted != "" && strings.Contains(text, unwanted) {
 		x = false
 	}
 
@@ -59,7 +52,7 @@ func process(filename string) {
 	for fileScanner.Scan() {
 		line := fileScanner.Text()
 
-		if strings.Contains(line, options["header"]) {
+		if strings.Contains(line, header) {
 			reportMatch(lines)
 			lines = []string{}
 		}
@@ -71,44 +64,32 @@ func process(filename string) {
 	readFile.Close()
 }
 
-func opts() {
-	for i := 0; i < len(os.Args[1:]); i++ {
-		k := os.Args[(1 + i)]
+func init() {
+	var h = flag.String("header", "", "The string that indicates the start of the block")
+	var w = flag.String("wanted", "", "The string that indicates that we want the block")
+	var u = flag.String("unwanted", "", "The string that indicates that we do not want the block")
 
-		if strings.HasPrefix(k, "--") {
-			if hasKey(options, k) {
-				dropdead(fmt.Sprintf("--%s has already been used\n", k))
-			} else {
-				i++
-				options[k[2:]] = os.Args[(1 + i)]
-			}
-		} else {
-			if toolbox.FileExists(k) {
-				files = append(files, k)
-			} else {
-				dropdead(fmt.Sprintf("[%s] is not a real file\n", k))
-			}
-		}
+	flag.Parse()
+
+	header = *h
+	if header == "" {
+		dropdead("--header is required\n")
 	}
 
-	hasWanted = hasKey(options, "wanted")
-	hasUnwanted = hasKey(options, "unwanted")
+	wanted = *w
+	unwanted = *u
 
-	if hasKey(options, "header") {
-		if hasWanted || hasUnwanted {
-			// This is good
-		} else {
-			options["wanted"] = options["header"]
-		}
-	} else {
-		dropdead("--header is required\n")
+	if wanted == "" && unwanted == "" {
+		wanted = header
 	}
 }
 
 func main() {
-	opts()
-
-	for _, filename := range files {
-		process(filename)
+	for _, filename := range flag.Args() {
+		if toolbox.FileExists(filename) {
+			process(filename)
+		} else {
+			dropdead(fmt.Sprintf("[%s] is not a real file\n", filename))
+		}
 	}
 }
